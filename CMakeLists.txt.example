@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.4)
+project(Prac)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTOR ./bin)
+set(LLVM_PATH /home/user/Study/8sem/Prac/llvm-3.5.0.src)
+include_directories(${LLVM_PATH}/include/ ./include)
+set(LLVM_FLAGS)
+execute_process(COMMAND ${LLVM_PATH}/Release+Asserts/bin/llvm-config --ldflags --libs --system-libs
+        OUTPUT_VARIABLE LLVM_FLAGS_LINKER)
+execute_process(COMMAND ${LLVM_PATH}/Release+Asserts/bin/llvm-config --cxxflags
+        OUTPUT_VARIABLE LLVM_FLAGS_CXX)
+string(REPLACE "\n" " " LLVM_FLAGS_CXX ${LLVM_FLAGS_CXX})
+string(REPLACE "\n" " " LLVM_FLAGS_LINKER ${LLVM_FLAGS_LINKER})
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LLVM_FLAGS_CXX}")
+set(CMAKE_SHARED_LINKER_FLAGS  "${CMAKE_SHARED_LINKER_FLAGS} ${LLVM_FLAGS_LINKER}")
+add_definitions(-D__STDC_LIMIT_MACROS)
+add_definitions(-D__STDC_CONSTANT_MACROS)
+set(SOURCE_FILES src/Algorithm.cpp src/AvailableExpessionsPass.cpp src/AvailableExpressions.cpp)
+set(HEADERS_FILES include/Algorithm.h include/AvailableExpressions.h)
+link_directories(${LLVM_PATH}/lib)
+add_library(Available_Expressions SHARED ${SOURCE_FILES} ${HEADERS_FILES})
+add_executable(main src/main.cpp)

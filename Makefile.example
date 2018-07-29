@@ -1,0 +1,26 @@
+bin_path=/home/andrey/llvm/bin/bin
+llvm_path=/home/andrey/llvm/bin
+incl_path=./include
+
+incl=include
+src=src
+bin=bin
+
+HEADERS=$(incl)/AvailableExpressions.h $(incl)/Algorithm.h
+
+all: $(bin)/AvailableExpessionsPass.so
+
+$(bin)/AvailableExpessionsPass.so: $(bin)/AvailableExpessionsPass.o $(bin)/AvailableExpressions.o $(bin)/Algorithm.o
+	g++ -shared -L$(llvm_path)/lib `$(bin_path)/llvm-config --ldflags -libs` $(bin)/AvailableExpessionsPass.o $(bin)/AvailableExpressions.o $(bin)/Algorithm.o -o $(bin)/AvailableExpessionsPass.so
+
+$(bin)/AvailableExpressions.o: $(src)/AvailableExpressions.cpp $(HEADERS)
+	g++ -c $(src)/AvailableExpressions.cpp -I$(llvm_path)/include -I$(incl_path) `$(bin_path)/llvm-config --cxxflags` -o $(bin)/AvailableExpressions.o
+
+$(bin)/AvailableExpessionsPass.o: $(src)/AvailableExpessionsPass.cpp $(HEADERS)
+	g++ -c $(src)/AvailableExpessionsPass.cpp -I$(llvm_path)/include -I$(incl_path) `$(bin_path)/llvm-config --cxxflags` -o $(bin)/AvailableExpessionsPass.o
+
+$(bin)/Algorithm.o: $(src)/Algorithm.cpp $(HEADERS)
+	g++ -c $(src)/Algorithm.cpp -I$(llvm_path)/include -I$(incl_path) `$(bin_path)/llvm-config --cxxflags` -o $(bin)/Algorithm.o
+
+clean:
+	rm -rf bin/* src/*~ include/*~ test/*~ *~

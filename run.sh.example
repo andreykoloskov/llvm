@@ -1,0 +1,7 @@
+#!/bin/bash
+
+bin_path=/home/andrey/llvm/bin/bin
+test=$1
+
+$bin_path/clang -emit-llvm test/$test.c -c -o test/$test.bc
+$bin_path/llvm-dis < test/$test.bc > test/$test.llvm.c
